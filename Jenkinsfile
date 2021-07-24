@@ -133,7 +133,7 @@ pipeline {
                         sh "apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common"
                         sh "curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -"
                         sh "apt-key fingerprint 0EBFCD88"
-                        sh "add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable\""
+                        sh "add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/debian \$(lsb_release -cs) stable\""
                         sh "apt-get update && apt-get install -y docker-ce-cli"
                         sh "docker network create --subnet=192.168.0.0/24 test_proxy_net"
                         sh "docker run --net test_proxy_net --ip 192.168.0.9 --name squid_proxy -d --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass --volume /var/spool/squid thelebster/docker-squid-simple-proxy"
