@@ -133,7 +133,7 @@ pipeline {
 
                         sh "docker network create --subnet=192.168.0.0/24 test_proxy_net"
                         sh "docker run --net test_proxy_net --ip 192.168.0.9 --name squid_proxy -d --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass --volume /var/spool/squid thelebster/docker-squid-simple-proxy"
-                        sh "docker run --net test_proxy_net --ip 192.168.0.5 -d -p 8080:8081 dxxwarlockxxb/test_echo_ip_server"
+                        sh "docker run --net test_proxy_net --ip 192.168.0.5 -d -p 8081:8081 dxxwarlockxxb/test_echo_ip_server"
 
                         sh '''\
                         if [ ! -d lintests ]; then
