@@ -20,10 +20,10 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerpassword', usernameVariable: 'dockeruser')]) {
                             sh """
                             docker login -p $dockerpassword -u $dockeruser
-                            docker push oscript/onescript-builder:deb
-                            docker push oscript/onescript-builder:rpm
-                            docker push oscript/onescript-builder:gcc
-                            docker create --name gcc-$BUILD_NUMBER oscript/onescript-builder:gcc
+                            docker push dxxwarlockxxb/onescript-builder:deb
+                            docker push dxxwarlockxxb/onescript-builder:rpm
+                            docker push dxxwarlockxxb/onescript-builder:gcc
+                            docker create --name gcc-$BUILD_NUMBER dxxwarlockxxb/onescript-builder:gcc
                             docker cp gcc-$BUILD_NUMBER:/built .
                             docker rm gcc-$BUILD_NUMBER
                             """.stripIndent()
@@ -182,7 +182,7 @@ pipeline {
                 stage('DEB distribution') {
                     agent { 
                         docker {
-                            image 'oscript/onescript-builder:deb'
+                            image 'dxxwarlockxxb/onescript-builder:deb'
                             label 'master' 
                         }
                     }
@@ -199,7 +199,7 @@ pipeline {
                 stage('RPM distribution') {
                     agent { 
                         docker {
-                            image 'oscript/onescript-builder:rpm'
+                            image 'dxxwarlockxxb/onescript-builder:rpm'
                             label 'master' 
                         }
                     }
