@@ -104,11 +104,14 @@ pipeline {
                                 deleteDir()
                             }
                             unstash 'buildResults'
-                            docker.image('thelebster/docker-squid-simple-proxy').withRun('--ip 192.168.0.9 --name squid_proxy -d --restart=always --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass --volume /var/spool/squid') {
-                                docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('--ip 192.168.0.5 -d -p 8080:8080') {
-                                    bat "chcp $outputEnc > nul\r\n\"${tool 'MSBuild'}\" Build.csproj /t:xUnitTest"
+                            docker.image('mysql:5').withRun('-e "MYSQL_ROOT_PASSWORD=my-secret-pw"') { c ->
+                                docker.image('centos:7').inside("--link ${c.id}:db") {
+                                    echo "test"
                                 }
                             }
+                            // docker.image('thelebster/docker-squid-simple-proxy').withRun('--ip 192.168.0.9 --name squid_proxy -d --restart=always --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass --volume /var/spool/squid') {
+                            //     docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('--ip 192.168.0.5 -d -p 8080:8080') {
+                            bat "chcp $outputEnc > nul\r\n\"${tool 'MSBuild'}\" Build.csproj /t:xUnitTest"
 
                             junit 'tests/tests.xml'
                         }
