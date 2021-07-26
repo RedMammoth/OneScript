@@ -105,8 +105,8 @@ pipeline {
                             }
                             unstash 'buildResults'
                             script {
-                                docker.image('thelebster/docker-squid-simple-proxy').withRun('--ip 192.168.0.9 --name squid_proxy -d --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass') {
-                                    docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('--ip 192.168.0.5 -d -p 8081:8081') {
+                                docker.image('thelebster/docker-squid-simple-proxy').withRun('--ip 192.168.0.9 --name squid_proxy --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass') {
+                                    docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('--ip 192.168.0.5 -p 8081:8081') {
                                         bat "chcp $outputEnc > nul\r\n\"${tool 'MSBuild'}\" Build.csproj /t:xUnitTest"
                                     }
                                 }
