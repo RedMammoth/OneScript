@@ -105,17 +105,13 @@ pipeline {
                             }
                             unstash 'buildResults'
                             script {
-                                docker.image('thelebster/docker-squid-simple-proxy').withRun('--ip 192.168.0.9 --name squid_proxy --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass') {
-                                    docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('--ip 192.168.0.5 -p 8081:8081') {
+                                docker.image('thelebster/docker-squid-simple-proxy').withRun('--publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass') {
+                                    docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('-p 8081:8081') {
                                         bat "chcp $outputEnc > nul\r\n\"${tool 'MSBuild'}\" Build.csproj /t:xUnitTest"
                                     }
                                 }
                             }
-//                             bat "docker network create --subnet=192.168.0.0/24 test_proxy_net"
-//                             bat "docker run --net test_proxy_net --ip 192.168.0.9 --name squid_proxy -d --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass --volume /var/spool/squid "
-//                             bat "docker run --net test_proxy_net --ip 192.168.0.5 -d -p 8081:8081 dxxwarlockxxb/test_echo_ip_server"
-                            bat "chcp $outputEnc > nul\r\n\"${tool 'MSBuild'}\" Build.csproj /t:xUnitTest"
-
+                            
                             junit 'tests/tests.xml'
                         }
                     }
@@ -139,8 +135,8 @@ pipeline {
                         unstash 'builtNativeApi'
                         
                         script {
-                            docker.image('thelebster/docker-squid-simple-proxy').withRun('--ip 192.168.0.9 --name squid_proxy --publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass') {
-                                docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('--ip 192.168.0.5 --name echo_server -p 8081:8081') {
+                            docker.image('thelebster/docker-squid-simple-proxy').withRun('--publish 3128:3128 -p 2222:22 -e SQUID_USER=proxy_user -e SQUID_PASS=proxy_pass') {
+                                docker.image('dxxwarlockxxb/test_echo_ip_server').withRun('-p 8081:8081') {
                                     sh '''\
                                     if [ ! -d lintests ]; then
                                         mkdir lintests
